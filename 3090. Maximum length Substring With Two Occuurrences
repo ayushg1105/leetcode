@@ -1,0 +1,23 @@
+class Solution(object):
+    def maximumLengthSubstring(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        l= 0
+        max_len=0
+        count={}
+        for r in range(len(s)):
+            char = s[r]
+            if char in count :
+                count[char] += 1
+            else:
+                count[char] = 1 
+            while count[char] > 2:
+                l_char = s[l]
+                count[l_char] -= 1
+                l += 1
+            w = r-l+1
+            if w > max_len :
+                max_len = w
+        return max_len
