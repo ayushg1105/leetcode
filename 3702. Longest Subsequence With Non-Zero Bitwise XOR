@@ -1,0 +1,14 @@
+class Solution(object):
+    def longestSubsequence(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if all(x==0 for x in nums):
+            return 0
+        t=0
+        for x in nums:
+            t ^= x
+        if t != 0:
+            return(len(nums))
+        return len(nums)-1
