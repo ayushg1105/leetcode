@@ -1,0 +1,51 @@
+class Solution(object):
+    def minMoves(self, classroom, energy):
+        """
+        :type classroom: List[str]
+        :type energy: int
+        :rtype: int
+        """
+        R, C = len(classroom), len(classroom[0])
+        targets = {}
+        start = None
+        
+        for r in range(R):
+            for c in range(C):
+                if classroom[r][c] in ('L', 'T'):
+                    targets[(r, c)] = len(targets)
+                elif classroom[r][c] == 'S':
+                    start = (r, c)
+                    
+        if not targets: 
+            return 0
+        
+        goal_mask = (1 << len(targets)) - 1
+        
+        q = deque([(start[0], start[1], 0, energy, 0)])
+        visited = {(start[0], start[1], 0): energy}
+        
+        while q:
+            r, c, mask, e, moves = q.popleft()
+            
+            if e == 0: 
+                continue
+            
+            for dr, dc in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < R and 0 <= nc < C and classroom[nr][nc] not in ('X', '#'):
+                    ch = classroom[nr][nc]
+                    
+                    nxt_mask = mask | (1 << targets[(nr, nc)]) if (nr, nc) in targets else mask
+                    
+                    if nxt_mask == goal_mask: 
+                        return moves + 1
+                    
+                    # The bug was here: 'S' (Start) does NOT act as a recharge station, only 'R' does.
+                    nxt_e = energy if ch == 'R' else e - 1
+                    
+                    if visited.get((nr, nc, nxt_mask), -1) < nxt_e:
+                        visited[(nr, nc, nxt_mask)] = nxt_e
+                        q.append((nr, nc, nxt_mask, nxt_e, moves + 1))
+                        
+        return -1
