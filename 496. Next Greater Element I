@@ -1,0 +1,19 @@
+class Solution(object):
+    def nextGreaterElement(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
+        """
+        r = []
+        for val in nums1:
+            n2index = nums2.index(val)
+            found = False
+            for i in range(n2index+1, len(nums2)):
+                if nums2[i] > val:
+                    r.append(nums2[i])
+                    found = True
+                    break
+            if not found:
+                r.append(-1)
+        return r    
